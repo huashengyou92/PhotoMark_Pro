@@ -1,0 +1,411 @@
+/* 导入 Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Caveat&family=Noto+Sans+Mono&family=Noto+Serif&display=swap');
+
+/* 导入 MiSans 字体 */
+@import url('https://cdn.jsdelivr.net/npm/misans@4.0.0/lib/Normal/MiSans-Medium.min.css');
+@import url('https://cdn.jsdelivr.net/npm/misans@4.0.0/lib/Normal/MiSans-Bold.min.css');
+
+:root {
+    --banner-scale: 0.8; /* 基准缩放比例 */
+    --base-padding: 20px;
+    --base-title-size: 18px;
+    --base-text-size: 12px;
+    --base-height: 39px;
+    --base-margin: 6px;
+    --font-size-small: 0.85;
+    --font-size-normal: 1;
+    --font-size-large: 1.15;
+    --current-font-size: var(--font-size-normal);
+    --font-weight-normal: 400;
+    --font-weight-bold: 700;
+    --font-weight-black: 900;
+    --current-font-weight: var(--font-weight-bold);
+    --font-family-default: system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    --font-family-misans: "MiSans", var(--font-family-default); /* 添加 MiSans 字体 */
+    --font-family-caveat: 'Caveat', cursive;
+    --font-family-helvetica: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-family-futura: Futura, "Trebuchet MS", Arial, sans-serif;
+    --font-family-avenir: Avenir, "Avenir Next", "Segoe UI", sans-serif;
+    --font-family-didot: Didot, "Bodoni MT", "Times New Roman", serif;
+    --current-font-family: var(--font-family-default);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family-default);
+    line-height: 1.6;
+    color: #333;
+}
+
+.container {
+    width: 800px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f8f8f8;
+    margin-bottom: 20px;
+}
+
+.photo-mark-title {
+    font-family: var(--font-family-caveat), system-ui;
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.photo-mark-description {
+    font-family: var(--font-family-misans), system-ui;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.preview-box {
+    margin-bottom: 30px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #f8f8f8;
+}
+
+.preview-box h2 {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.preview {
+    box-shadow: 7px 4px 15px #ccc;
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative; /* 添加相对定位，使加载指示器能够正确定位 */
+}
+
+.preview-picture {
+    display: block;
+    max-width: 100%;
+    transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+    opacity: 0; /* 初始透明度 */
+    transform: scale(0.95); /* 初始缩放 */
+}
+
+.preview-picture.loading {
+    opacity: 0.6; /* 半透明 */
+    transform: scale(0.98); /* 轻微缩放 */
+}
+
+.preview-picture.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top-color: #333;
+    animation: spin 1s infinite linear;
+    z-index: 2; /* 确保在图片上方 */
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.preview-picture.loaded {
+    opacity: 1; /* 加载完成后设置为不透明 */
+    transform: scale(1); /* 恢复到正常大小 */
+}
+
+.preview-picture.fade {
+    opacity: 0; /* 在切换时设置为透明 */
+    transform: scale(0.95); /* 在切换时缩小 */
+}
+
+.preview-info {
+    padding: calc(var(--base-padding) * var(--banner-scale));
+    display: flex;
+    flex-direction: row; /* Keep it as row for horizontal layout */
+    font-family: var(--current-font-family), system-ui;
+    align-items: center; /* Align items vertically centered */
+}
+
+.preview-info-left {
+    flex-grow: 1;
+    width: auto; /* Allow it to size based on content */
+    position: relative;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-start;
+    justify-content: center; /* Center items vertically */
+}
+
+.preview-info-split {
+    border-left: 2px solid #ddd;
+    height: calc(var(--base-height) * var(--banner-scale));
+    margin-top: calc(var(--base-margin) * var(--banner-scale));
+    margin-right: 12px;
+    margin-left: 12px;
+}
+
+.preview-info-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.preview-info-model,
+.preview-info-device {
+    font-weight: var(--current-font-weight);
+    font-size: calc(var(--base-title-size) * var(--banner-scale) * var(--current-font-size));
+    white-space: nowrap; /* Prevent line breaks */
+}
+
+.preview-info-date,
+.preview-info-gps {
+    font-size: calc(var(--base-text-size) * var(--banner-scale) * var(--current-font-size));
+    color: #aaa;
+    white-space: nowrap; /* Prevent line breaks */
+}
+
+.preview-info-brand {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.preview-info-brand img {
+    height: calc(var(--base-height) * var(--banner-scale));
+}
+
+/* 加载指示器样式 */
+.loading-indicator {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #1890ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.preview-picture.loading + .loading-indicator {
+    display: block;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* 图片加载状态 */
+.preview-picture.loading {
+    opacity: 0.3;
+}
+
+/* 控制区域样式 */
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.combined-section {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+}
+
+.section-part {
+    flex: 1;
+    min-width: 300px;
+}
+
+.upload-section, .form-section {
+    flex: 1;
+    min-width: 300px;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+}
+
+h3 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"], select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: var(--current-font-family);
+    font-size: 14px;
+}
+
+input[type="range"] {
+    width: 100%;
+}
+
+input[type="file"] {
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--current-font-family);
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #40a9ff;
+    transform: translateY(-2px);
+}
+
+#random-image {
+    margin-left: 10px;
+}
+
+.actions {
+    text-align: center;
+    margin-top: 30px;
+}
+
+#download-btn {
+    padding: 12px 24px;
+    font-size: 16px;
+}
+
+/* Github Corner */
+.github-corner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    height: 80px;
+}
+
+/* 按钮样式 */
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 30px auto;
+    width: 480px;
+    text-align: center;
+}
+
+.action-button {
+    width: 140px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 30px;
+    border: 1px solid #1890ff;
+    background-color: white;
+    color: #1890ff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-button:hover {
+    background-color: #e6f7ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(24, 144, 255, 0.1);
+}
+
+.download-button {
+    background-color: #1890ff;
+    color: white;
+}
+
+.download-button:hover {
+    background-color: #40a9ff;
+}
+
+.random-button {
+    background-color: #f9f9f9;
+    border-color: #d9d9d9;
+    color: #333;
+}
+
+.random-button:hover {
+    background-color: #f0f0f0;
+    border-color: #bfbfbf;
+}
+
+.button-icon {
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+.button-text {
+    font-weight: normal;
+}
+
+/* 响应式设计 */
+@media (max-width: 840px) {
+    .container {
+        width: 95%;
+    }
+}
+
+@media (max-width: 600px) {
+    .controls {
+        flex-direction: column;
+    }
+    
+    .combined-section {
+        flex-direction: column;
+    }
+    
+    .section-part, .upload-section, .form-section {
+        min-width: 100%;
+    }
+}
