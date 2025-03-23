@@ -1,6 +1,6 @@
 # PhotoMark Pro - Photo Watermarking Tool
 
-<div align="right">
+<div align="left">
     <a href="README_ch.md">🇨🇳 中文版</a>
 </div>
 

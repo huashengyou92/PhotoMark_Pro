@@ -377,7 +377,7 @@ button:hover {
 
 .random-button:hover {
     background-color: #f0f0f0;
-    border-color: #bfbfbf;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .button-icon {
@@ -409,3 +409,48 @@ button:hover {
         min-width: 100%;
     }
 }
+
+/* 从index.html移动的样式 */
+.file-hint {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.upload-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin-bottom: 10px;
+}
+
+.upload-button {
+    width: 100%;
+    max-width: 200px;
+    background-color: #1890ff;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.upload-button:hover {
+    background-color: #40a9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(24, 144, 255, 0.2);
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+/* 注意：.form-group已经在上面定义，这里仅添加flex相关属性 */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 以下样式已存在，但属性有所不同，保留原有样式并添加新属性 */
