@@ -170,16 +170,16 @@ function isHeicLibLoaded() {
   const DefaultPictureExif = BrandDefaultInfo['Leica']; // 使用Leica作为默认
   
   const ExhibitionImages = [
-    'public/exhibition/apple.jpg',
-    'public/exhibition/canon.jpg',
-    'public/exhibition/dji.jpg',
-    'public/exhibition/fujifilm.jpg',
-    'public/exhibition/huawei.jpg',
-    'public/exhibition/leica.jpg',
-    'public/exhibition/xiaomi.jpg',
-    'public/exhibition/nikon.jpg',
-    'public/exhibition/sony.jpg',
-    'public/exhibition/panasonic.jpg'
+    './exhibition/apple.jpg',
+    './exhibition/canon.jpg',
+    './exhibition/dji.jpg',
+    './exhibition/fujifilm.jpg',
+    './exhibition/huawei.jpg',
+    './exhibition/leica.jpg',
+    './exhibition/xiaomi.jpg',
+    './exhibition/nikon.jpg',
+    './exhibition/sony.jpg',
+    './exhibition/panasonic.jpg'
   ];
   
   // DOM 元素
@@ -289,7 +289,7 @@ function isHeicLibLoaded() {
   // 初始化GitHub角落
   function initGithubCorner() {
     githubCornerDiv.innerHTML = `
-      <a href="https://github.com/huashengyou92/PhotoMark_Pro" class="github-corner" target="_blank" rel="noopener">
+      <a href="https://github.com/huashengyou92/photo-marks" class="github-corner" target="_blank" rel="noopener">
         <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
           <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
           <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
@@ -1103,12 +1103,12 @@ function isHeicLibLoaded() {
     // 如果品牌为空，返回未知图标
     if (!brand) {
       console.warn('品牌为空，使用默认图标');
-      return 'public/brand/unknow.svg';
+      return './brand/unknow.svg';
     }
     
     // 从BrandsMap获取文件名
     const fileName = BrandsMap[brand] || 'unknow';
-    const url = `public/brand/${fileName}.svg`;
+    const url = `./brand/${fileName}.svg`;
     
     console.log('图标URL:', url);
     return url;
@@ -1134,7 +1134,7 @@ function isHeicLibLoaded() {
       infoBrandImg.onerror = function() {
         console.error('品牌图标加载失败:', brandUrl);
         // 使用默认图标
-        infoBrandImg.src = 'public/brand/unknow.svg';
+        infoBrandImg.src = './brand/unknow.svg';
         
         // 二次错误处理 - 如果默认图标也加载失败
         infoBrandImg.onerror = function() {
@@ -1152,23 +1152,62 @@ function isHeicLibLoaded() {
   function handleDownload() {
     const preview = document.getElementById('preview');
     
+    console.log('开始下载图片...');
+    
     if (typeof domtoimage === 'undefined') {
       console.error('找不到dom-to-image库，请确保已正确加载');
       alert('下载功能暂时不可用，请检查控制台错误');
       return;
     }
     
-    domtoimage.toBlob(preview)
-      .then(function(blob) {
+    console.log('dom-to-image库已加载，准备生成图片');
+    
+    // 尝试添加一个简单的导出方式 - 使用toPng而不是toBlob
+    try {
+      // 备用方式1: 使用toPng
+      domtoimage.toPng(preview, {
+        quality: 0.95,
+        bgcolor: '#fff',
+        scale: 2
+      })
+      .then(function(dataUrl) {
+        console.log('图片生成成功(toPng)，准备下载');
         const link = document.createElement('a');
         link.download = `${currentFormValues.model}-${currentFormValues.date.replace(/[\s:]/g, '-')}.png`;
-        link.href = URL.createObjectURL(blob);
+        link.href = dataUrl;
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
       })
       .catch(function(error) {
-        console.error('生成图片失败:', error);
-        alert('生成图片失败，请检查控制台错误');
+        console.error('toPng生成失败，尝试toBlob:', error);
+        
+        // 备用方式2: 使用原始方式
+        domtoimage.toBlob(preview, {
+          quality: 0.95,
+          bgcolor: '#fff',
+          scale: 2,
+          imagePlaceholder: undefined,
+          cacheBust: true
+        })
+        .then(function(blob) {
+          console.log('图片生成成功(toBlob)，准备下载');
+          const link = document.createElement('a');
+          link.download = `${currentFormValues.model}-${currentFormValues.date.replace(/[\s:]/g, '-')}.png`;
+          link.href = URL.createObjectURL(blob);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        })
+        .catch(function(error) {
+          console.error('所有下载方式都失败:', error);
+          alert('生成图片失败，请检查控制台错误');
+        });
       });
+    } catch (e) {
+      console.error('下载功能执行出错:', e);
+      alert('下载功能执行出错，请检查控制台错误');
+    }
   }
   
   // 加载图片函数
